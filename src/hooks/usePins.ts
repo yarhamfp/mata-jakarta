@@ -14,10 +14,13 @@ export const DEFAULT_PINS = [
   '501941_JKP_SATPOLPP_JL.-MH.-THAMRIN-C02_CCTV-01',
 ];
 
+// Daftar kosong dianggap "belum memilih": versi lama otomatis menyimpan [] untuk setiap pengunjung,
+// jadi [] tidak bisa dibedakan dari pengunjung yang memang belum pernah memin kamera.
 function readStored(): string[] | null {
   try {
     const raw = localStorage.getItem(KEY);
-    return raw === null ? null : (JSON.parse(raw) as string[]);
+    const parsed = raw === null ? null : (JSON.parse(raw) as string[]);
+    return parsed && parsed.length ? parsed : null;
   } catch { return null; }
 }
 
