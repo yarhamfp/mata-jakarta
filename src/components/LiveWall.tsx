@@ -1,18 +1,42 @@
-import { Check, Link2, Maximize2, X } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { Check, Link2, Maximize2, Minimize2, X } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import type { Cam } from '../types';
 import { camLabel, prettyName } from '../format';
 import { useHls } from '../hooks/useHls';
 
 function Cell({ cam, onRemove }: { cam: Cam; onRemove: () => void }) {
+  const cellRef = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLVideoElement>(null);
   const msg = useHls(ref, cam.base);
+  const [full, setFull] = useState(false);
+
+  useEffect(() => {
+    const onChange = () => setFull(document.fullscreenElement === cellRef.current);
+    document.addEventListener('fullscreenchange', onChange);
+    return () => document.removeEventListener('fullscreenchange', onChange);
+  }, []);
+
+  const toggleFull = () => {
+    const cell = cellRef.current;
+    const video = ref.current;
+    if (!cell) return;
+    if (document.fullscreenElement) { document.exitFullscreen(); return; }
+    if (cell.requestFullscreen) cell.requestFullscreen().catch(() => {});
+    // iOS Safari tidak mendukung fullscreen pada elemen biasa, hanya pada video
+    else (video as (HTMLVideoElement & { webkitEnterFullscreen?: () => void }) | null)?.webkitEnterFullscreen?.();
+  };
+
   return (
-    <div className="wcell">
+    <div ref={cellRef} className="wcell" onDoubleClick={toggleFull}>
       <video ref={ref} muted autoPlay playsInline />
       {msg && <div className="stage-msg">{msg}</div>}
       <div className="wlabel">{prettyName(cam)} <span>{camLabel(cam)}</span></div>
-      <button className="wx" title="Lepas dari Live Wall" aria-label="Lepas dari Live Wall" onClick={onRemove}><X size={14} /></button>
+      <div className="wtools">
+        <button className="wb" title={full ? 'Keluar layar penuh' : 'Layar penuh (klik dua kali)'} aria-label={full ? 'Keluar layar penuh' : 'Layar penuh'} onClick={toggleFull}>
+          {full ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
+        </button>
+        <button className="wb" title="Lepas dari Live Wall" aria-label="Lepas dari Live Wall" onClick={onRemove}><X size={14} /></button>
+      </div>
     </div>
   );
 }
@@ -34,7 +58,7 @@ export default function LiveWall({ cams, onRemove, onExit }: Props) {
   const fs = () => {
     const el = boxRef.current;
     if (!el) return;
-    if (document.fullscreenElement) document.exitFullscreen(); else el.requestFullscreen?.();
+    if (document.fullscreenElement) document.exitFullscreen(); else el.requestFullscreen?.().catch(() => {});
   };
 
   return (
