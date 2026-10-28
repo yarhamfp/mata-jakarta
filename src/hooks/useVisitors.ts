@@ -5,6 +5,7 @@ const API = 'https://countapi.mileshilliard.com/api/v1';
 // Saat pengembangan lokal pakai kunci terpisah supaya angka asli tidak terdorong.
 const KEY = import.meta.env.DEV ? 'mata-jakarta-pengunjung-dev' : 'mata-jakarta-pengunjung';
 const SEEN = 'cctvVisited';
+const REFRESH_MS = 30_000;
 
 // Satu browser dihitung sekali: kunjungan pertama menaikkan angka, kunjungan berikutnya hanya membaca.
 // Kalau layanan tidak bisa dihubungi, hasilnya null dan badge tidak ditampilkan.
@@ -28,7 +29,13 @@ export function useVisitors() {
       })
       .catch(() => { /* badge simply stays hidden */ });
 
-    return () => ac.abort();
+    // Perbarui berkala supaya angka ikut naik tanpa refresh; berhenti saat tab tersembunyi.
+    const timer = window.setInterval(() => {
+      if (document.hidden) return;
+      call('get').then((d: { value?: number }) => { if (typeof d.value === 'number') setCount(d.value); }).catch(() => { /* keep last value */ });
+    }, REFRESH_MS);
+
+    return () => { ac.abort(); window.clearInterval(timer); };
   }, []);
 
   return count;
