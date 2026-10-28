@@ -1,6 +1,16 @@
+import { Eye } from 'lucide-react';
+import { useVisitors } from '../hooks/useVisitors';
+
 export default function Footer() {
+  const visitors = useVisitors();
   return (
     <footer>
+      {visitors !== null && (
+        <p className="visitors" title="Jumlah browser yang pernah membuka situs ini">
+          <Eye size={13} aria-hidden="true" />
+          <span className="num">{visitors.toLocaleString('id-ID')}</span> pengunjung
+        </p>
+      )}
       <p>
         Daftar kamera berasal dari portal publik Pemprov DKI Jakarta (
         <a href="https://jakcctv.jakarta.go.id/publik" target="_blank" rel="noopener">jakcctv.jakarta.go.id/publik</a>
