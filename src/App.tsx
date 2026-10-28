@@ -3,6 +3,7 @@ import { BY_SHORT, CAMS, NAV_KEYS, SHORT, type View } from './data';
 import { DEFAULT_PINS, usePins } from './hooks/usePins';
 import { useTheme } from './hooks/useTheme';
 import Footer from './components/Footer';
+import HealthAlert from './components/HealthAlert';
 import Header from './components/Header';
 import Home from './features/Home';
 
@@ -84,6 +85,7 @@ export default function App() {
   return (
     <>
       <Header view={view} pinCount={pins.length} theme={theme} onTheme={toggleTheme} onNav={go} onPrefetch={prefetch} />
+      <HealthAlert />
 
       {view === 'home' && <Home pinCount={pins.length} onOpen={go} onPrefetch={prefetch} />}
 

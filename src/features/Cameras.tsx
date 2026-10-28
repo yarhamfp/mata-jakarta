@@ -40,11 +40,11 @@ export default function Cameras({ active, area, onArea, q, onQ, openId, onOpen, 
     return new Set(
       CAMS.filter((c) =>
         (area === 'all' || (area === 'demo' ? !!demoSpotOf(c) : c.area === area)) &&
-        (!needle || `${c.name} ${prettyName(c)} ${c.area} ${c.cam}`.toLowerCase().includes(needle)) &&
-        status[c.id] !== 'off',
+        (!needle || `${c.name} ${prettyName(c)} ${c.area} ${c.cam}`.toLowerCase().includes(needle)),
       ).map((c) => c.id),
     );
-  }, [q, area, status]);
+    // kamera offline tetap ditampilkan (dengan penanda), bukan disembunyikan
+  }, [q, area]);
 
   const vals = Object.values(status);
   const okCount = vals.filter((s) => s === 'ok').length;

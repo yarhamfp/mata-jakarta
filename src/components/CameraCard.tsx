@@ -1,4 +1,4 @@
-import { Flag, Star } from 'lucide-react';
+import { Flag, Star, VideoOff } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import type { Cam, CamStatus } from '../types';
 import { camLabel, ownerOf, prettyName } from '../format';
@@ -38,10 +38,11 @@ export default function CameraCard({ cam, hidden, spot, paused, pinned, refreshM
   return (
     <article ref={ref} className={`card${status === 'off' ? ' off' : ''}`} hidden={hidden}>
       <button className="media" onClick={() => onOpen(cam.id)} aria-label={`Buka live ${prettyName(cam)}`}>
-        {src ? <img src={src} alt="" /> : <span className={status === 'off' ? 'media-off' : 'skeleton'}>{status === 'off' ? 'Tidak ada sinyal' : ''}</span>}
+        {src ? <img src={src} alt="" /> : status === 'off' ? <span className="media-off"><VideoOff size={22} aria-hidden="true" />Tidak ada sinyal</span> : <span className="skeleton" />}
+        {status === 'off' && <span className="offline-badge"><VideoOff size={12} aria-hidden="true" /> Offline</span>}
         <span className="media-foot">
           <span className={`dot${status === 'ok' ? '' : ' idle'}`} />
-          {status === 'off' ? 'Offline' : status === 'ok' ? `Live · ${age}` : 'Memuat'}
+          {status === 'off' ? (age ? `Gambar terakhir · ${age}` : 'Offline') : status === 'ok' ? `Live · ${age}` : 'Memuat'}
         </span>
       </button>
       <button className={`pinbtn${pinned ? ' on' : ''}`} onClick={() => onPin(cam.id)} title={pinned ? 'Lepas dari Live Wall' : 'Pin ke Live Wall'} aria-pressed={pinned}>

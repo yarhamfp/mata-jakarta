@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { Cam } from '../types';
 import { camLabel, ownerOf, prettyName, shortArea } from '../format';
 import { useHls } from '../hooks/useHls';
+import StreamOverlay from './StreamOverlay';
 
 interface Props {
   cam: Cam;
@@ -15,7 +16,7 @@ interface Props {
 
 export default function PlayerModal({ cam, spot, pinned, onPin, onClose, onStep }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const msg = useHls(videoRef, cam.base);
+  const stream = useHls(videoRef, cam.base);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -67,7 +68,7 @@ export default function PlayerModal({ cam, spot, pinned, onPin, onClose, onStep 
       </div>
       <div className="stage">
         <video ref={videoRef} controls muted autoPlay playsInline />
-        {msg && <div className="stage-msg">{msg}</div>}
+        <StreamOverlay base={cam.base} state={stream.state} attempt={stream.attempt} onRetry={stream.retry} />
       </div>
     </div>
   );

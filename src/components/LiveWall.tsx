@@ -3,11 +3,12 @@ import { useEffect, useRef, useState } from 'react';
 import type { Cam } from '../types';
 import { camLabel, prettyName } from '../format';
 import { useHls } from '../hooks/useHls';
+import StreamOverlay from './StreamOverlay';
 
 function Cell({ cam, onRemove }: { cam: Cam; onRemove: () => void }) {
   const cellRef = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLVideoElement>(null);
-  const msg = useHls(ref, cam.base);
+  const stream = useHls(ref, cam.base);
   const [full, setFull] = useState(false);
 
   useEffect(() => {
@@ -29,7 +30,7 @@ function Cell({ cam, onRemove }: { cam: Cam; onRemove: () => void }) {
   return (
     <div ref={cellRef} className="wcell" onDoubleClick={toggleFull}>
       <video ref={ref} muted autoPlay playsInline />
-      {msg && <div className="stage-msg">{msg}</div>}
+      <StreamOverlay base={cam.base} state={stream.state} attempt={stream.attempt} onRetry={stream.retry} />
       <div className="wlabel">{prettyName(cam)} <span>{camLabel(cam)}</span></div>
       <div className="wtools">
         <button className="wb" title={full ? 'Keluar layar penuh' : 'Layar penuh (klik dua kali)'} aria-label={full ? 'Keluar layar penuh' : 'Layar penuh'} onClick={toggleFull}>
