@@ -13,7 +13,7 @@ export default function Home({ pinCount, onOpen, onPrefetch }: Props) {
   const tiles: Array<{ view: View; area?: string; title: string; text: string; Icon: ComponentType<{ size?: number }>; demo?: boolean }> = [
     { view: 'kamera', area: 'demo', title: 'Perkiraan titik demo', text: `${DEMO_COUNT} kamera di sekitar DPR/MPR dan Bundaran HI/Thamrin.`, Icon: Flag, demo: true },
     { view: 'kamera', area: 'all', title: 'Pantau CCTV', text: `${CAMS.length} kamera publik. Cari lokasi atau saring per area.`, Icon: Camera },
-    { view: 'wall', title: 'Live Wall', text: pinCount ? `Putar ${pinCount} kamera pilihan Anda sekaligus.` : 'Pantau beberapa kamera sekaligus. Pin kamera dulu dengan ikon bintang.', Icon: Star },
+    { view: 'wall', title: 'Live Wall', text: pinCount ? `Putar ${pinCount} kamera sekaligus. Daftarnya bisa diubah dengan ikon bintang.` : 'Pantau beberapa kamera sekaligus. Pin kamera dulu dengan ikon bintang.', Icon: Star },
     { view: 'macet', title: 'Hindari Macet', text: 'Cek jalur dari asal ke tujuan terhadap perkiraan titik demo, lengkap dengan navigasi ke Google Maps.', Icon: Navigation },
   ];
 
