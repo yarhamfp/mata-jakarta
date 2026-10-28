@@ -1,6 +1,6 @@
 import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
 import { BY_SHORT, CAMS, NAV_KEYS, SHORT, type View } from './data';
-import { usePins } from './hooks/usePins';
+import { DEFAULT_PINS, usePins } from './hooks/usePins';
 import { useTheme } from './hooks/useTheme';
 import Footer from './components/Footer';
 import Header from './components/Header';
@@ -25,7 +25,7 @@ function readUrl() {
   const c = p.get('c');
   const w = (p.get('w') ?? '').split(',').map((s) => BY_SHORT.get(s)).filter((x): x is string => !!x);
   const v = p.get('v');
-  const view: View = v && VIEWS.has(v) ? (v as View) : w.length ? 'wall' : a || c || p.get('q') ? 'kamera' : 'home';
+  const view: View = v && VIEWS.has(v) ? (v as View) : w.length ? 'wall' : a || c || p.get('q') ? 'kamera' : 'wall';
   return {
     view,
     area: a && NAV_KEYS.has(a) ? a : 'all',
@@ -58,13 +58,13 @@ export default function App() {
   // keep the address bar shareable: menu, filter, search, open camera, and wall
   useEffect(() => {
     const p = new URLSearchParams();
-    if (view !== 'home') p.set('v', view);
+    if (view !== 'wall') p.set('v', view); // Live Wall adalah tampilan awal, jadi alamat utamanya tidak perlu parameter
     if (view === 'kamera') {
       if (area !== 'all') p.set('a', area);
       if (q) p.set('q', q);
       if (openId) p.set('c', SHORT.get(openId)!);
     }
-    if (view === 'wall' && pins.length) p.set('w', pins.map((id) => SHORT.get(id)).filter(Boolean).join(','));
+    if (view === 'wall' && pins.length && pins !== DEFAULT_PINS) p.set('w', pins.map((id) => SHORT.get(id)).filter(Boolean).join(','));
     const s = p.toString();
     history.replaceState(null, '', s ? `?${s}` : location.pathname);
   }, [view, area, q, openId, pins]);
@@ -83,7 +83,7 @@ export default function App() {
 
   return (
     <>
-      <Header view={view} pinCount={pins.length} theme={theme} onTheme={toggleTheme} onNav={(v) => go(v)} onPrefetch={prefetch} />
+      <Header view={view} pinCount={pins.length} theme={theme} onTheme={toggleTheme} onNav={go} onPrefetch={prefetch} />
 
       {view === 'home' && <Home pinCount={pins.length} onOpen={go} onPrefetch={prefetch} />}
 

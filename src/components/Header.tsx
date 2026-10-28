@@ -12,7 +12,7 @@ interface Props {
 }
 
 const ITEMS: Array<{ view: View; label: string; Icon: ComponentType<{ size?: number }>; mobileOnly?: boolean }> = [
-  { view: 'home', label: 'Beranda', Icon: House, mobileOnly: true },
+  { view: 'home', label: 'Beranda', Icon: House },
   { view: 'kamera', label: 'Pantau CCTV', Icon: Camera },
   { view: 'wall', label: 'Live Wall', Icon: Star },
   { view: 'macet', label: 'Hindari Macet', Icon: Navigation },
@@ -24,12 +24,12 @@ export default function Header({ view, pinCount, theme, onTheme, onNav, onPrefet
       <a
         className="brand"
         href={location.pathname}
-        aria-label="Mata Jakarta, ke beranda"
+        aria-label="Mata Jakarta, ke Live Wall"
         onClick={(e) => {
           // plain click resets the view in place; modified clicks keep the normal "open in new tab" behaviour
           if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
           e.preventDefault();
-          onNav('home');
+          onNav('wall');
         }}
       >
         <svg width="22" height="22" viewBox="0 0 32 32" aria-hidden="true">
