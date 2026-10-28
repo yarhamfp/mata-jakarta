@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mata Jakarta</title>
+    <meta name="description" content="Mata Jakarta: pantau CCTV publik Jakarta secara langsung dan cek jalur yang aman dari macet akibat demo. Memakai stream publik resmi Pemprov DKI Jakarta." />
+    <meta name="theme-color" content="#121211" />
+    <meta property="og:title" content="Mata Jakarta" />
+    <meta property="og:description" content="Pantau CCTV publik Jakarta secara langsung dan cek jalur yang aman dari macet akibat demo." />
+    <meta property="og:type" content="website" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script>
+      // set theme before first paint to avoid a flash
+      try {
+        var t = localStorage.getItem('cctvTheme');
+        if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        document.documentElement.dataset.theme = t;
+      } catch (e) { document.documentElement.dataset.theme = 'dark'; }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
